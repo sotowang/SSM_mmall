@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 
 @Controller
 @RequestMapping("/manage/category")
@@ -27,8 +28,10 @@ public class CategoryManageController {
 
     @RequestMapping("add_category.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
+    public ServerResponse addCategory(HttpSession session, @RequestParam("categoryName") String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) throws UnsupportedEncodingException {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
+//        String categoryName1 = new String(categoryName.getBytes("iso-8859-1"), "UTF-8");
+
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
         }
@@ -59,7 +62,7 @@ public class CategoryManageController {
     }
     @RequestMapping("get_category.do")
     @ResponseBody
-    public ServerResponse getChildrenParallerCategory(HttpSession session, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
+    public ServerResponse getChildrenParallerCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
@@ -67,7 +70,7 @@ public class CategoryManageController {
         //校验是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //查询子节点的category信息,并且不递归,保持平级
-            return iCategortService.getChildrenParalleCategory(parentId);
+            return iCategortService.getChildrenParalleCategory(categoryId);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作,需要管理员权限");
         }
