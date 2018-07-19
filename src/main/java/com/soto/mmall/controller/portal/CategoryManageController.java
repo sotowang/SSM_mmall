@@ -28,7 +28,7 @@ public class CategoryManageController {
 
     @RequestMapping("add_category.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, @RequestParam("categoryName") String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) throws UnsupportedEncodingException {
+    public ServerResponse addCategory(HttpSession session, @RequestParam("categoryName") String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
 //        String categoryName1 = new String(categoryName.getBytes("iso-8859-1"), "UTF-8");
 
