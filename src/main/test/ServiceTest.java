@@ -20,8 +20,14 @@ public class ServiceTest {
     @Test
     public void Test() {
         //测试 addCategory
-        ServerResponse serverResponse = categortService.addCategory("测试", 0);
+//        ServerResponse serverResponse = categortService.addCategory("测试", 0);
+//        System.out.println(serverResponse.getMsg());
+
+        //测试setCategoryName
+        ServerResponse serverResponse = categortService.updateCategoryName(100036, "测试更新");
         System.out.println(serverResponse.getMsg());
+
+
 
         //测试登陆
 //        ServerResponse serverResponse = iUserService.login("admin", "admin");

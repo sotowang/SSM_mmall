@@ -26,7 +26,7 @@ public class CategoryManageController {
 
     @RequestMapping("add_category.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, String categoryName,@RequestParam(value = "parentId",defaultValue = "0") Integer parentId) {
+    public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
@@ -37,9 +37,23 @@ public class CategoryManageController {
             //增加处理分类逻辑
             return iCategortService.addCategory(categoryName, parentId);
 
-        }else {
+        } else {
             return ServerResponse.createByErrorMessage("需要管理员权限");
         }
     }
-
+    @RequestMapping("set_categoryName.do")
+    @ResponseBody
+    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
+        }
+        //校验是否为管理员
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //更新categoryName
+            return iCategortService.updateCategoryName(categoryId, categoryName);
+        } else {
+            return ServerResponse.createByErrorMessage("无权限操作,需要管理员权限");
+        }
+    }
 }

@@ -31,4 +31,19 @@ public class CategortServiceImpl implements ICategortService {
         }
         return ServerResponse.createByErrorMessage("添加商品种类失败");
     }
+
+    public ServerResponse updateCategoryName(Integer categoryId, String categoryName) {
+        if (categoryId == null || StringUtils.isBlank(categoryName)) {
+            return ServerResponse.createByErrorMessage("更新种类参数有误");
+        }
+        Category category = new Category();
+        category.setId(categoryId);
+        category.setName(categoryName);
+
+        int rowCount = categoryMapper.updateByPrimaryKeySelective(category);
+        if (rowCount > 0) {
+            return ServerResponse.createBySuccessMessage("更新商品种类成功");
+        }
+        return ServerResponse.createByErrorMessage("更新商品种类失败");
+    }
 }
