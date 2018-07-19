@@ -172,6 +172,12 @@ public class UserServiceImpl implements IUserService {
 
     }
 
+    public ServerResponse checkAdminRole(User user) {
+        if (Const.Role.ROLE_ADMIN == user.getRole()) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
 
 
 }
