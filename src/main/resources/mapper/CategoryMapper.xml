@@ -39,6 +39,7 @@
       </foreach>
     </where>
   </sql>
+
   <sql id="Update_By_Example_Where_Clause">
     <where>
       <foreach collection="example.oredCriteria" item="criteria" separator="or">
@@ -71,6 +72,14 @@
   <sql id="Base_Column_List">
     id, parent_id, name, status, sort_order, create_time, update_time
   </sql>
+
+  <select id="selectCategoryChildrenByParentId" resultMap="BaseResultMap" parameterType="int">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_category
+    where parent_id = #{parentId}
+  </select>
+
   <select id="selectByExample" parameterType="com.soto.mmall.pojo.CategoryExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
