@@ -69,4 +69,20 @@ public class ProductManageController {
         }
     }
 
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse getList(HttpSession session,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
+        }
+        //校验是否为管理员
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //增加产品逻辑
+            return iProductService.getProductList(pageNum, pageSize);
+        } else {
+            return ServerResponse.createByErrorMessage("需要管理员权限");
+        }
+    }
+
 }

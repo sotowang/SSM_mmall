@@ -77,6 +77,15 @@
     id, category_id, name, subtitle, main_image, sub_images, detail, price, stock, status, 
     create_time, update_time
   </sql>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from mmall_product
+    order by id asc
+  </select>
+
+
   <select id="selectByExample" parameterType="com.soto.mmall.pojo.ProductExample" resultMap="BaseResultMap">
     select
     <if test="distinct">

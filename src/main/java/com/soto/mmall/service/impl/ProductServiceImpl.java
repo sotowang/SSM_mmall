@@ -1,5 +1,8 @@
 package com.soto.mmall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.soto.mmall.common.ResponseCode;
 import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.dao.CategoryMapper;
@@ -10,9 +13,12 @@ import com.soto.mmall.service.IProductService;
 import com.soto.mmall.util.DateTimeUtil;
 import com.soto.mmall.util.PropertiesUtil;
 import com.soto.mmall.vo.ProductDetailVo;
+import com.soto.mmall.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -101,6 +107,34 @@ public class ProductServiceImpl implements IProductService {
         return productDetailVo;
     }
 
+    public ServerResponse getProductList(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> productList = productMapper.selectList();
+
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+
+        for (Product productItem : productList) {
+            ProductListVo productListVo = assembleProductListVo(productItem);
+            productListVoList.add(productListVo);
+        }
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    private ProductListVo assembleProductListVo(Product product) {
+        ProductListVo productListVo = new ProductListVo();
+
+        productListVo.setId(product.getId());
+        productListVo.setName(product.getName());
+        productListVo.setCategoryId(product.getCategoryId());
+        productListVo.setImageHost(PropertiesUtil.getProperty(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/")));
+
+        productListVo.setMainImage(product.getMainImage());
+        productListVo.setPrice(product.getPrice());
+        productListVo.setStatus(product.getStatus());
+        return productListVo;
+    }
 
 
 }
