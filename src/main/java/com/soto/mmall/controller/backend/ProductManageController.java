@@ -1,19 +1,25 @@
 package com.soto.mmall.controller.backend;
 
+import com.google.common.collect.Maps;
 import com.soto.mmall.common.Const;
 import com.soto.mmall.common.ResponseCode;
 import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.pojo.Product;
 import com.soto.mmall.pojo.User;
+import com.soto.mmall.service.IFileService;
 import com.soto.mmall.service.IProductService;
 import com.soto.mmall.service.IUserService;
+import com.soto.mmall.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
@@ -23,6 +29,9 @@ public class ProductManageController {
     private IUserService iUserService;
     @Autowired
     private IProductService iProductService;
+
+    @Autowired
+    private IFileService iFileService;
 
     @RequestMapping("save.do")
     @ResponseBody
@@ -98,6 +107,18 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("需要管理员权限");
         }
+    }
+    @RequestMapping("upload.do")
+    @ResponseBody
+    public ServerResponse upload(MultipartFile file, HttpServletRequest request) {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file, path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
+
+        return ServerResponse.createBySuccess(fileMap);
     }
 
 }
