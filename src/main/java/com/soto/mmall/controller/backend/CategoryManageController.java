@@ -1,4 +1,4 @@
-package com.soto.mmall.controller.portal;
+package com.soto.mmall.controller.backend;
 
 import com.soto.mmall.common.Const;
 import com.soto.mmall.common.ResponseCode;
