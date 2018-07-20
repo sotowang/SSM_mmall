@@ -85,6 +85,20 @@
     order by id asc
   </select>
 
+  <select id="selectByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_product
+    <where>
+      <if test="productName != null">
+        and name like #{productName}
+      </if>
+      <if test="productId != null">
+        and id= #{productId}
+      </if>
+    </where>
+  </select>
+
 
   <select id="selectByExample" parameterType="com.soto.mmall.pojo.ProductExample" resultMap="BaseResultMap">
     select

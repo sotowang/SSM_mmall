@@ -109,10 +109,10 @@ public class ProductServiceImpl implements IProductService {
 
     public ServerResponse getProductList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
+
+
         List<Product> productList = productMapper.selectList();
-
         List<ProductListVo> productListVoList = Lists.newArrayList();
-
         for (Product productItem : productList) {
             ProductListVo productListVo = assembleProductListVo(productItem);
             productListVoList.add(productListVo);
@@ -134,6 +134,22 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setPrice(product.getPrice());
         productListVo.setStatus(product.getStatus());
         return productListVo;
+    }
+
+    public ServerResponse<PageInfo> searchProduct(String productName, Integer productId,int pageNum,int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.isNotBlank(productName)) {
+            productName = new StringBuffer().append("%").append(productName).append("%").toString();
+        }
+        List<Product> productList = productMapper.selectByNameAndProductId(productName, productId);
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for (Product productItem : productList) {
+            ProductListVo productListVo = assembleProductListVo(productItem);
+            productListVoList.add(productListVo);
+        }
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageInfo);
     }
 
 
