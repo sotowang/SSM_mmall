@@ -123,4 +123,20 @@ public class Product {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public Product() {
+    }
+
+    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status) {
+        this.id = id;
+        this.categoryId = categoryId;
+        this.name = name;
+        this.subtitle = subtitle;
+        this.mainImage = mainImage;
+        this.subImages = subImages;
+        this.detail = detail;
+        this.price = price;
+        this.stock = stock;
+        this.status = status;
+    }
 }

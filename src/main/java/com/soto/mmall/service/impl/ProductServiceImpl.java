@@ -9,7 +9,6 @@ import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.dao.CategoryMapper;
 import com.soto.mmall.dao.ProductMapper;
 import com.soto.mmall.pojo.Category;
-import com.soto.mmall.pojo.CategoryExample;
 import com.soto.mmall.pojo.Product;
 import com.soto.mmall.service.ICategortService;
 import com.soto.mmall.service.IProductService;
@@ -46,13 +45,13 @@ public class ProductServiceImpl implements IProductService {
             }
             //更新
             if (product.getId() != null) {
-                int rowCount = productMapper.updateByPrimaryKey(product);
+                int rowCount = productMapper.updateByPrimaryKeySelective(product);
                 if (rowCount > 0) {
                     return ServerResponse.createBySuccess("更新产品成功");
                 }
                 return ServerResponse.createBySuccess("更新产品失败");
             } else {
-                int rowCount = productMapper.insert(product);
+                int rowCount = productMapper.insertSelective(product);
                 if (rowCount > 0) {
                     return ServerResponse.createBySuccess("新增产品成功");
                 }
@@ -69,7 +68,7 @@ public class ProductServiceImpl implements IProductService {
         Product product = new Product();
         product.setId(productId);
         product.setStatus(status);
-        int rowCount = productMapper.updateByPrimaryKey(product);
+        int rowCount = productMapper.updateByPrimaryKeySelective(product);
         if (rowCount > 0) {
             return ServerResponse.createBySuccessMessage("修改产品销售状态成功");
         }
@@ -102,7 +101,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStatus(product.getStatus());
         productDetailVo.setStock(product.getStock());
 
-        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/"));
+        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://192.168.0.100/"));
 
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         if (category == null) {
@@ -136,7 +135,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost(PropertiesUtil.getProperty(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/")));
+        productListVo.setImageHost(PropertiesUtil.getProperty(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://192.168.0.100/")));
 
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
