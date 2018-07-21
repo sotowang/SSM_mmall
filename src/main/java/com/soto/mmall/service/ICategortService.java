@@ -1,5 +1,6 @@
 package com.soto.mmall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.pojo.Category;
 
@@ -13,5 +14,8 @@ public interface ICategortService {
 
     ServerResponse<List<Category>> getChildrenParalleCategory(Integer categoryId);
 
-    ServerResponse selectCategoryAndChildrenById(Integer categoryId);
-}
+    ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId);
+
+
+
+    }
