@@ -72,11 +72,22 @@
     id, user_id, product_id, quantity, checked, create_time, update_time
   </sql>
 
+
+  <select id="selectCartProductCheckedStatusByUserId">
+    select
+    count(1)
+    from mmall_cart
+    where
+    checked = 0
+    and user_id=#{userId}
+
+  </select>
+
   <select id="selectByUserIdProductId" resultMap="BaseResultMap" parameterType="map">
     select
     <include refid="Base_Column_List"></include>
     from mmall_cart
-    where user_id = #{userId};
+    where user_id = #{userId}
     and product_id = #{productId}
   </select>
 
@@ -85,7 +96,7 @@
     <include refid="Base_Column_List"></include>
     from mmall_cart
     where
-    user_id = #{userId};
+    user_id = #{userId}
 
   </select>
 
@@ -104,8 +115,8 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+    select
+    <include refid="Base_Column_List"/>
     from mmall_cart
     where id = #{id,jdbcType=INTEGER}
   </select>
