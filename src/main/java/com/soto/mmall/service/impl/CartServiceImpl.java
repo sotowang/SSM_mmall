@@ -16,8 +16,6 @@ import com.soto.mmall.vo.CartVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,8 +28,7 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private ProductMapper productMapper;
 
-    @RequestMapping("add.do")
-    @ResponseBody
+
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         if (productId == null || count == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
