@@ -2,7 +2,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
-public class BigDecimalTewst {
+public class BigDecimalTest {
     @Test
     public void test1() {
         System.out.println(0.05 + 0.01);
