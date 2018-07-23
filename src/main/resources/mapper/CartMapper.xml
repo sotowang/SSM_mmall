@@ -71,16 +71,28 @@
   <sql id="Base_Column_List">
     id, user_id, product_id, quantity, checked, create_time, update_time
   </sql>
+  
+  
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    delete
+    from mmall_cart
+    where user_id = #{userId}
+    <if test="productIdList  != null">
+      and product_id in
+      <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
 
+  </delete>
 
-  <select id="selectCartProductCheckedStatusByUserId">
+  <select id="selectCartProductCheckedStatusByUserId" resultType="int" parameterType="int">
     select
     count(1)
     from mmall_cart
     where
     checked = 0
     and user_id=#{userId}
-
   </select>
 
   <select id="selectByUserIdProductId" resultMap="BaseResultMap" parameterType="map">

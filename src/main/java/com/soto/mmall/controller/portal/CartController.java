@@ -28,6 +28,16 @@ public class CartController {
         }
         return iCartService.add(user.getId(), productId, count);
     }
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse list(HttpSession session, Integer count, Integer productId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.list(user.getId());
+    }
+
     @RequestMapping("update.do")
     @ResponseBody
     public ServerResponse update(HttpSession session, Integer count, Integer productId) {
@@ -36,6 +46,15 @@ public class CartController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         return iCartService.update(user.getId(), productId, count);
+    }
+    @RequestMapping("delete_product.do")
+    @ResponseBody
+    public ServerResponse deleteProduct(HttpSession session, String productIds) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.deleteProduct(user.getId(), productIds);
     }
 
 }
