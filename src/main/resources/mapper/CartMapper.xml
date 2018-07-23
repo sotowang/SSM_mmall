@@ -72,7 +72,15 @@
     id, user_id, product_id, quantity, checked, create_time, update_time
   </sql>
   
-  
+  <update id="checkedOrUncheckedAllProduct" parameterType="map">
+    update mmall_cart
+    set checked=#{checked}
+    update_time = now()
+    where
+    user_id = #{userId}
+  </update>
+
+
   <delete id="deleteByUserIdProductIds" parameterType="map">
     delete
     from mmall_cart
@@ -83,7 +91,6 @@
         #{item}
       </foreach>
     </if>
-
   </delete>
 
   <select id="selectCartProductCheckedStatusByUserId" resultType="int" parameterType="int">
