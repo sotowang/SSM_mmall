@@ -78,6 +78,16 @@
     receiver_district, receiver_address, receiver_zip, create_time, update_time
   </sql>
 
+
+  <select id="selectByUserIdShippingId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_shipping
+    where id=#{shippingId}
+    and user_id = #{userId}
+  </select>
+
+
   <delete id="deleteByShippingIdUserId" parameterType="map">
     delete from mmall_shipping
     where id=#{shippingId}
@@ -99,9 +109,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
      where id = #{id,jdbcType=INTEGER}
      and user_id = #{userId,jdbcType=INTEGER}
-
-
   </update>
+
 
 
 

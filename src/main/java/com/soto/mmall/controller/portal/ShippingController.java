@@ -48,5 +48,14 @@ public class ShippingController {
         }
         return iShippingService.update(user.getId(), shipping);
     }
+    @ResponseBody
+    @RequestMapping("select.do")
+    public ServerResponse<Shipping> select(HttpSession session, Integer shippingId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iShippingService.select(user.getId(), shippingId);
+    }
 
 }
