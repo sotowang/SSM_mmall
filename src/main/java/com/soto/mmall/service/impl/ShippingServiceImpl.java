@@ -40,7 +40,7 @@ public class ShippingServiceImpl implements IShippingService {
 
     public ServerResponse update(Integer userId, Shipping shipping) {
         shipping.setUserId(userId);
-        int rowCount = shippingMapper.updateByShipping(shipping);
+        int rowCount = shippingMapper.updateByPrimaryKeySelective(shipping);
         if (rowCount > 0) {
             return ServerResponse.createBySuccess("更新地址成功");
         }
