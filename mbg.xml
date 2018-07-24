@@ -46,11 +46,12 @@
         <!--table指定每个表生成策略-->
         <!--<table tableName="mmall_user" domainObjectName="User"></table>-->
         <!--<table tableName="mmall_category" domainObjectName="Category"></table>-->
-        <table tableName="mmall_product" domainObjectName="Product" >
-            <columnOverride column="sub_images" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <columnOverride column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />
-
-        </table>
+        <!--<table tableName="mmall_cart" domainObjectName="Cart"></table>-->
+        <table tableName="mmall_shipping" domainObjectName="Shipping"></table>
+        <!--<table tableName="mmall_product" domainObjectName="Product" >-->
+            <!--<columnOverride column="sub_images" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+            <!--<columnOverride column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+        <!--</table>-->
 
     </context>
 </generatorConfiguration>
