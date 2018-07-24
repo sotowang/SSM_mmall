@@ -77,6 +77,15 @@
     id, user_id, receiver_name, receiver_phone, receiver_mobile, receiver_province, receiver_city, 
     receiver_district, receiver_address, receiver_zip, create_time, update_time
   </sql>
+
+  <delete id="deleteByShippingIdUserId" parameterType="map">
+    delete from mmall_shipping
+    where id=#{shippingId}
+    and user_id = #{userId}
+  </delete>
+
+
+
   <select id="selectByExample" parameterType="com.soto.mmall.pojo.ShippingExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -107,7 +116,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.soto.mmall.pojo.Shipping">
+
+
+
+  <insert id="insert" parameterType="com.soto.mmall.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
     insert into mmall_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 
       receiver_city, receiver_district, receiver_address, 
@@ -119,7 +131,7 @@
       #{receiverZip,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.soto.mmall.pojo.Shipping">
+  <insert id="insertSelective" parameterType="com.soto.mmall.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
     insert into mmall_shipping
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
