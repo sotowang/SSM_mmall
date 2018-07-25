@@ -48,7 +48,9 @@
         <!--<table tableName="mmall_category" domainObjectName="Category"></table>-->
         <!--<table tableName="mmall_cart" domainObjectName="Cart"></table>-->
         <!--<table tableName="mmall_shipping" domainObjectName="Shipping"></table>-->
-        <table tableName="mmall_order" domainObjectName="Order"></table>
+        <!--<table tableName="mmall_order" domainObjectName="Order"></table>-->
+        <table tableName="mmall_order_item" domainObjectName="OrderItem"></table>
+        <table tableName="mmall_pay_info" domainObjectName="PayInfo"></table>
         <!--<table tableName="mmall_product" domainObjectName="Product" >-->
             <!--<columnOverride column="sub_images" javaType="java.lang.String" jdbcType="VARCHAR" />-->
             <!--<columnOverride column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />-->

@@ -79,6 +79,16 @@
     id, order_no, user_id, shipping_id, payment, payment_type, postage, status, payment_time, 
     send_time, end_time, close_time, create_time, update_time
   </sql>
+  
+  <select id="selectByUserIdAndOrderNo" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_order
+    where order_no = #{orderNo}
+    and user_id = #{userId}
+  </select>
+  
+  
   <select id="selectByExample" parameterType="com.soto.mmall.pojo.OrderExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
