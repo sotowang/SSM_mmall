@@ -52,7 +52,7 @@ public class OrderServiceImpl implements IOrderService {
         /** 使用Configs提供的默认参数
          *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
          */
-        AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
+         tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
 
     }
 
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements IOrderService {
     PayInfoMapper payInfoMapper;
 
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
-        Map<String, Object> resultMap = Maps.newHashMap();
+        Map<String, String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
             return ServerResponse.createByErrorMessage("用户没有该订单");
@@ -79,6 +79,9 @@ public class OrderServiceImpl implements IOrderService {
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
         String subject = new StringBuilder().append("扫码支付,订单号: ").append(outTradeNo).toString();
+
+        // (必填) 付款条码，用户支付宝钱包手机app点击“付款”产生的付款条码
+        String authCode = "用户自己的支付宝付款码"; // 条码示例，286648048691290423
 
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
@@ -124,7 +127,8 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))
+                //支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
 
@@ -158,7 +162,7 @@ public class OrderServiceImpl implements IOrderService {
                 }
                 log.info("qrPath:" + qrPath);
 
-                String qrUrl = PropertiesUtil.getProperty("ftp://192.168.0.100/") + targetFile.getName();
+                String qrUrl = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFile.getName();
                 resultMap.put("qrUrl", qrUrl);
                 return ServerResponse.createBySuccess(resultMap);
 
