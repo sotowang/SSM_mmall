@@ -12,13 +12,17 @@ import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.soto.mmall.common.Const;
 import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.dao.OrderItemMapper;
 import com.soto.mmall.dao.OrderMapper;
+import com.soto.mmall.dao.PayInfoMapper;
 import com.soto.mmall.pojo.Order;
 import com.soto.mmall.pojo.OrderItem;
+import com.soto.mmall.pojo.PayInfo;
 import com.soto.mmall.service.IOrderService;
 import com.soto.mmall.util.BigDecimalUtil;
+import com.soto.mmall.util.DateTimeUtil;
 import com.soto.mmall.util.FTPUtil;
 import com.soto.mmall.util.PropertiesUtil;
 import org.apache.commons.lang.StringUtils;
@@ -38,10 +42,28 @@ public class OrderServiceImpl implements IOrderService {
 
     private static final Log log = LogFactory.getLog(OrderServiceImpl.class);
 
+    private static AlipayTradeService tradeService;
+    static {
+        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
+         *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
+         */
+        Configs.init("zfbinfo.properties");
+
+        /** 使用Configs提供的默认参数
+         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
+         */
+        AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
+
+    }
+
+
+
     @Autowired
     OrderMapper orderMapper;
     @Autowired
     OrderItemMapper orderItemMapper;
+    @Autowired
+    PayInfoMapper payInfoMapper;
 
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, Object> resultMap = Maps.newHashMap();
@@ -105,15 +127,6 @@ public class OrderServiceImpl implements IOrderService {
                 .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
-        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
-         *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
-         */
-        Configs.init("zfbinfo.properties");
-
-        /** 使用Configs提供的默认参数
-         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
-         */
-        AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
 
 
 
@@ -176,6 +189,34 @@ public class OrderServiceImpl implements IOrderService {
             }
             log.info("body:" + response.getBody());
         }
+    }
+
+    public ServerResponse aliCallback(Map<String, String> params) {
+        Long orderNo = Long.parseLong(params.get("out_trade_no"));
+        String tradeNo = params.get("trade_no");
+        String tradeStatus = params.get("trade_status");
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            return ServerResponse.createByErrorMessage("非本店订单");
+        }
+        if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
+            return ServerResponse.createBySuccess("支付宝重复调用");
+        }
+        if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+            order.setStatus(Const.OrderStatusEnum.PAID.getCode());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
+
+        PayInfo payInfo = new PayInfo();
+        payInfo.setUserId(order.getUserId());
+        payInfo.setOrderNo(order.getOrderNo());
+        payInfo.setPayPlatform(Const.PayPlatFormEnum.ALIPAY.getCode());
+        payInfo.setPlatformNumber(tradeNo);
+        payInfo.setPlatformStatus(tradeStatus);
+
+        payInfoMapper.insert(payInfo);
+        return ServerResponse.createBySuccess();
     }
 
 }
