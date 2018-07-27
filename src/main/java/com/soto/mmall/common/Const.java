@@ -71,6 +71,16 @@ public class Const {
             this.code = code;
         }
 
+        public static OrderStatusEnum codeOf(int code) {
+            for (OrderStatusEnum orderStatusEnum : values()) {
+                if (orderStatusEnum.getCode() == code) {
+                    return orderStatusEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
+        }
+
+
         public String getValue() {
             return value;
         }
@@ -150,6 +160,16 @@ public class Const {
 
         public void setCode(int code) {
             this.code = code;
+        }
+
+
+        public static PaymentTypeEnum codeOf(int code) {
+            for (PaymentTypeEnum paymentTypeEnum : values()) {
+                if (paymentTypeEnum.getCode() == code) {
+                    return paymentTypeEnum;
+                }
+            }
+            throw new RuntimeException("没有找到对应的枚举");
         }
     }
 

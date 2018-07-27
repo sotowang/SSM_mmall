@@ -21,6 +21,8 @@ import com.soto.mmall.util.BigDecimalUtil;
 import com.soto.mmall.util.DateTimeUtil;
 import com.soto.mmall.util.FTPUtil;
 import com.soto.mmall.util.PropertiesUtil;
+import com.soto.mmall.vo.OrderVo;
+import com.soto.mmall.vo.ShippingVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -67,6 +69,8 @@ public class OrderServiceImpl implements IOrderService {
     private CartMapper cartMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private ShippingMapper shippingMapper;
 
 
     public ServerResponse createOrder(Integer userId, Integer shippingId) {
@@ -101,7 +105,52 @@ public class OrderServiceImpl implements IOrderService {
         //清空购物车
         this.cleanCart(cartList);
 
+        //返回给前端数据
+
+
+
     }
+
+    private OrderVo assembleOrderVo(Order order, List<OrderItem> orderItemList) {
+        OrderVo orderVo = new OrderVo();
+        orderVo.setOrderNo(order.getOrderNo());
+        orderVo.setPayment(order.getPayment());
+        orderVo.setPaymentType(order.getPaymentType());
+        orderVo.setPaymentTypeDesc(Const.PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
+        orderVo.setPostage(order.getPostage());
+        orderVo.setStatus(order.getStatus());
+        orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
+        orderVo.setShippingId(order.getShippingId());
+        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
+        if (shipping != null) {
+            orderVo.setReceiceName(shipping.getReceiverName());
+            orderVo.setShippingVo(assembleShippingVo(shipping));
+        }
+        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
+        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
+        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
+        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
+        orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
+
+        orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        for (OrderItem orderItem : orderItemList) {
+
+        }
+    }
+
+    private ShippingVo assembleShippingVo(Shipping shipping) {
+        ShippingVo shippingVo = new ShippingVo();
+        shippingVo.setReceiverName(shipping.getReceiverName());
+        shippingVo.setReceiverAddress(shipping.getReceiverAddress());
+        shippingVo.setReceiverProvince(shipping.getReceiverProvince());
+        shippingVo.setReceiverCity(shipping.getReceiverCity());
+        shippingVo.setReceiverPhone(shipping.getReceiverPhone());
+        shippingVo.setReceiverDistrict(shipping.getReceiverDistrict());
+        shippingVo.setReceiverMobile(shipping.getReceiverMobile());
+        shippingVo.setReceiverZip(shipping.getReceiverZip());
+        return shippingVo;
+    }
+
 
     private void cleanCart(List<Cart> cartList) {
         for (Cart cart : cartList) {
