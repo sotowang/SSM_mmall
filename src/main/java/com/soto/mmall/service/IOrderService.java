@@ -2,6 +2,7 @@ package com.soto.mmall.service;
 
 import com.github.pagehelper.PageInfo;
 import com.soto.mmall.common.ServerResponse;
+import com.soto.mmall.vo.OrderVo;
 
 import java.util.Map;
 
@@ -22,5 +23,9 @@ public interface IOrderService {
 
     ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize);
 
+
+    //backend
     ServerResponse<PageInfo> manageList(int pageNum, int pageSize);
+
+    ServerResponse<OrderVo> manageDetail(Long orderNo);
 }

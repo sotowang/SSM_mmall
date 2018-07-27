@@ -7,6 +7,7 @@ import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.pojo.User;
 import com.soto.mmall.service.IOrderService;
 import com.soto.mmall.service.IUserService;
+import com.soto.mmall.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,22 @@ public class OrderManageController {
         if (iUserService.checkAdminRole(user).isSuccess()) {
             //是管理员
             return iOrderService.manageList(pageNum, pageSize);
+
+        } else {
+            return ServerResponse.createByErrorMessage("需要管理员权限");
+        }
+    }
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse<OrderVo> orderDetail(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
+        }
+        //校验是否为管理员
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //是管理员
+            return iOrderService.manageDetail(orderNo);
 
         } else {
             return ServerResponse.createByErrorMessage("需要管理员权限");
