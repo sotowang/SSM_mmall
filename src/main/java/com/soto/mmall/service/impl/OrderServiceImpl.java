@@ -108,7 +108,7 @@ public class OrderServiceImpl implements IOrderService {
 
         //返回给前端数据
         OrderVo orderVo = assembleOrderVo(order, orderItemList);
-        return ServerResponse.createBySuccess(order);
+        return ServerResponse.createBySuccess(orderVo);
     }
 
     private OrderVo assembleOrderVo(Order order, List<OrderItem> orderItemList) {
