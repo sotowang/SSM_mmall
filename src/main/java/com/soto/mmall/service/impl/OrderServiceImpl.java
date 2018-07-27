@@ -96,9 +96,17 @@ public class OrderServiceImpl implements IOrderService {
         //mybatis 批量插入
         orderItemMapper.batchInsert(orderItemList);
         //生成成功,我们减少产品的库存
-
+        this.reduceProductStock(orderItemList);
 
         //清空购物车
+        this.cleanCart(cartList);
+
+    }
+
+    private void cleanCart(List<Cart> cartList) {
+        for (Cart cart : cartList) {
+            cartMapper.deleteByPrimaryKey(cart.getId());
+        }
     }
 
     private void reduceProductStock(List<OrderItem> orderItemlist) {
