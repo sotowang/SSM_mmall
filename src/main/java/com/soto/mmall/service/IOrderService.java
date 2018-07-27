@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.soto.mmall.common.ServerResponse;
 import com.soto.mmall.vo.OrderVo;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 public interface IOrderService {
@@ -30,4 +31,7 @@ public interface IOrderService {
     ServerResponse<OrderVo> manageDetail(Long orderNo);
 
     ServerResponse<PageInfo> manageSearch(Long orderNo, int pageNum, int pageSize);
+
+    ServerResponse<String> manageSendGoods(Long orderNo);
+
 }

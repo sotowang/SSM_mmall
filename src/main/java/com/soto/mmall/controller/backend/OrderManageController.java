@@ -75,7 +75,22 @@ public class OrderManageController {
         }
     }
 
+    @RequestMapping("send_goods.do")
+    @ResponseBody
+    public ServerResponse<String> orderSendGoods(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
+        }
+        //校验是否为管理员
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //是管理员
+            return iOrderService.manageSendGoods(orderNo);
 
+        } else {
+            return ServerResponse.createByErrorMessage("需要管理员权限");
+        }
+    }
 
 
 }
