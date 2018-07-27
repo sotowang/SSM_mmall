@@ -79,7 +79,13 @@
     id, order_no, user_id, shipping_id, payment, payment_type, postage, status, payment_time, 
     send_time, end_time, close_time, create_time, update_time
   </sql>
-  
+
+  <select id="selectAllOrder" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_order
+    order by create_time desc
+  </select>
   
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="int">
     select

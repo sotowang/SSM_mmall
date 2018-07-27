@@ -490,6 +490,7 @@ public class OrderServiceImpl implements IOrderService {
             List<OrderItem> orderItemList = Lists.newArrayList();
             if (userId == null) {
                 //todo 管理员查询不需要userid
+                orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
             } else {
                 orderItemList = orderItemMapper.getByOrderNoUserId(order.getOrderNo(), userId);
             }
@@ -498,5 +499,19 @@ public class OrderServiceImpl implements IOrderService {
         }
         return orderVoList;
     }
+
+    //backend
+    public ServerResponse<PageInfo> manageList(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectAllOrder();
+        List<OrderVo> orderVoList = this.assembleOrderVoList(orderList,null);
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVoList);
+
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+
+
 
 }

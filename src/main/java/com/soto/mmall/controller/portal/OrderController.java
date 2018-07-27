@@ -3,6 +3,7 @@ package com.soto.mmall.controller.portal;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.demo.trade.config.Configs;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.soto.mmall.common.Const;
 import com.soto.mmall.common.ResponseCode;
@@ -72,7 +73,7 @@ public class OrderController {
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+    public ServerResponse<PageInfo> list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
