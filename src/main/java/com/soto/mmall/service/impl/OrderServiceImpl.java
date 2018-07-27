@@ -107,9 +107,8 @@ public class OrderServiceImpl implements IOrderService {
         this.cleanCart(cartList);
 
         //返回给前端数据
-
-
-
+        OrderVo orderVo = assembleOrderVo(order, orderItemList);
+        return ServerResponse.createBySuccess(order);
     }
 
     private OrderVo assembleOrderVo(Order order, List<OrderItem> orderItemList) {
@@ -134,9 +133,13 @@ public class OrderServiceImpl implements IOrderService {
         orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
 
         orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        List<OrderItemVo> orderItemVoList = Lists.newArrayList();
         for (OrderItem orderItem : orderItemList) {
-
+            OrderItemVo orderItemVo = assembleOrderItemVo(orderItem);
+            orderItemVoList.add(orderItemVo);
         }
+        orderVo.setOrderItemVoList(orderItemVoList);
+        return orderVo;
     }
 
     private OrderItemVo assembleOrderItemVo(OrderItem orderItem) {
@@ -183,7 +186,7 @@ public class OrderServiceImpl implements IOrderService {
 
     private Order assembleOrder(Integer userId, Integer shippingId, BigDecimal payment) {
         Order order = new Order();
-        long orderNo = this.generateOrderNo();
+        Long orderNo = this.generateOrderNo();
         order.setOrderNo(orderNo);
         order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
         order.setPostage(0);
@@ -201,7 +204,7 @@ public class OrderServiceImpl implements IOrderService {
         return null;
     }
 
-    private long generateOrderNo() {
+    private Long generateOrderNo() {
         long currentTime = System.currentTimeMillis();
         return currentTime + new Random().nextInt(100);
     }
@@ -245,7 +248,7 @@ public class OrderServiceImpl implements IOrderService {
 
 
 
-    public ServerResponse pay(long orderNo, Integer userId, String path) {
+    public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
@@ -376,7 +379,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     public ServerResponse aliCallback(Map<String, String> params) {
-        long orderNo = long.parselong(params.get("out_trade_no"));
+        Long orderNo = Long.parseLong(params.get("out_trade_no"));
         String tradeNo = params.get("trade_no");
         String tradeStatus = params.get("trade_status");
         Order order = orderMapper.selectByOrderNo(orderNo);
@@ -404,7 +407,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
 
-    public ServerResponse queryOrderPayStatus(Integer userId, long orderNo) {
+    public ServerResponse queryOrderPayStatus(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
             return ServerResponse.createByErrorMessage("用户没有该订单");
