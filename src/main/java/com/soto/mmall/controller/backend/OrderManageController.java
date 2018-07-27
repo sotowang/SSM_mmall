@@ -58,6 +58,23 @@ public class OrderManageController {
             return ServerResponse.createByErrorMessage("需要管理员权限");
         }
     }
+    @RequestMapping("search.do")
+    @ResponseBody
+    public ServerResponse<PageInfo> orderSearch(HttpSession session, Long orderNo, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆,请选登陆");
+        }
+        //校验是否为管理员
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //是管理员
+            return iOrderService.manageSearch(orderNo, pageNum, pageSize);
+
+        } else {
+            return ServerResponse.createByErrorMessage("需要管理员权限");
+        }
+    }
+
 
 
 
