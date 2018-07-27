@@ -16,4 +16,6 @@ public interface IOrderService {
     ServerResponse<String> cancel(Integer userId, Long orderNo);
 
     ServerResponse getOrderCartProduct(Integer userId);
+
+    ServerResponse getOrderDetail(Integer userId, Long orderNo);
 }
