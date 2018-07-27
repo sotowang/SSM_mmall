@@ -72,13 +72,20 @@
     id, user_id, product_id, quantity, checked, create_time, update_time
   </sql>
 
+  <select id="selectCheckedCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_cart
+    where user_id = #{userId}
+    and checked = 1
+  </select>
+
+
   <select id="selectCartProductCount" parameterType="int" resultType="int">
     select
     NULLIF (sum(quantity),0) as count
     from mmall_cart
     where user_id = #{userId}
-
-
   </select>
 
   

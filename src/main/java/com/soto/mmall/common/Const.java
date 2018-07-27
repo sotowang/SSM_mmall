@@ -125,6 +125,34 @@ public class Const {
         }
     }
 
+    public enum PaymentTypeEnum {
+        ONLINE_PAY(1, "在线支付");
+
+        private String value;
+        private int code;
+
+        PaymentTypeEnum(int code, String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+    }
+
 
 
 }
