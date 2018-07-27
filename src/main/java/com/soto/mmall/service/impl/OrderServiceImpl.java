@@ -21,6 +21,7 @@ import com.soto.mmall.util.BigDecimalUtil;
 import com.soto.mmall.util.DateTimeUtil;
 import com.soto.mmall.util.FTPUtil;
 import com.soto.mmall.util.PropertiesUtil;
+import com.soto.mmall.vo.OrderItemVo;
 import com.soto.mmall.vo.OrderVo;
 import com.soto.mmall.vo.ShippingVo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -136,6 +137,20 @@ public class OrderServiceImpl implements IOrderService {
         for (OrderItem orderItem : orderItemList) {
 
         }
+    }
+
+    private OrderItemVo assembleOrderItemVo(OrderItem orderItem) {
+        OrderItemVo orderItemVo = new OrderItemVo();
+        orderItemVo.setOrderNo(orderItem.getOrderNo());
+        orderItemVo.setProductId(orderItem.getProductId());
+        orderItemVo.setProductName(orderItem.getProductName());
+        orderItemVo.setProductImage(orderItem.getProductImage());
+        orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
+        orderItemVo.setQuantity(orderItem.getQuantity());
+        orderItemVo.setTotalPrice(orderItem.getTotalPrice());
+        orderItemVo.setTotalPrice(orderItem.getTotalPrice());
+        orderItemVo.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreateTime()));
+        return orderItemVo;
     }
 
     private ShippingVo assembleShippingVo(Shipping shipping) {
