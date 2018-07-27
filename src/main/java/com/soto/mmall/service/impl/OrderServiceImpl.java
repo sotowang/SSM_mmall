@@ -10,6 +10,8 @@ import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.soto.mmall.common.Const;
@@ -470,6 +472,31 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess(orderVo);
         }
         return ServerResponse.createByErrorMessage("没有找到该订单");
+    }
+
+    public ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize) {
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectByUserId(userId);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderList, userId);
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVoList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    private List<OrderVo> assembleOrderVoList(List<Order> orderList,Integer userId) {
+        List<OrderVo> orderVoList = Lists.newArrayList();
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = Lists.newArrayList();
+            if (userId == null) {
+                //todo 管理员查询不需要userid
+            } else {
+                orderItemList = orderItemMapper.getByOrderNoUserId(order.getOrderNo(), userId);
+            }
+            OrderVo orderVo = assembleOrderVo(order, orderItemList);
+            orderVoList.add(orderVo);
+        }
+        return orderVoList;
     }
 
 }
